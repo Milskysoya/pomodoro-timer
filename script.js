@@ -1,90 +1,141 @@
-// JavaScript untuk fungsionalitas timer
+let countdown;
+let totalTime = 0;
+let timeLeft = 0;
+let streak = 0;
+let cycle = 0; // untuk hitung 3x fokus
+let isBreak = false;
+
+// Elemen HTML
 const timerDisplay = document.getElementById('timer');
-const startBtn = document.getElementById('startBtn');
-const resetBtn = document.getElementById('resetBtn');
-const pomodoroBtn = document.getElementById('pomodoroBtn');
-const shortBreakBtn = document.getElementById('shortBreakBtn');
-const longBreakBtn = document.getElementById('longBreakBtn');
+const progressBar = document.getElementById('progressBar');
+const minutesInput = document.getElementById('minutesInput');
+const secondsInput = document.getElementById('secondsInput');
 const alarmSound = document.getElementById('alarmSound');
+const missionBtn = document.getElementById('missionBtn');
+const streakCount = document.getElementById('streakCount');
+const quoteEl = document.getElementById('quote');
+const noteInput = document.getElementById('noteInput');
+const addNoteBtn = document.getElementById('addNoteBtn');
+const noteList = document.getElementById('noteList');
 
-let timerInterval;
-let timeLeft = 1500; // 25 menit dalam detik
-let currentMode = 'pomodoro';
-let isRunning = false;
-let pomodoroCount = 0; // hitung berapa kali pomodoro selesai
+// === Quotes Acak ===
+const quotes = [
+    "Focus on progress, not perfection.",
+    "Discipline is the bridge between goals and success.",
+    "Small steps every day lead to big results.",
+    "Stay focused, the galaxy awaits your success.",
+    "Your time is your greatest power. Use it wisely."
+];
+quoteEl.textContent = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
 
-const modes = {
-    pomodoro: 1500,   // 25 menit
-    shortBreak: 300,  // 5 menit
-    longBreak: 900    // 15 menit
-};
-
-function updateTimerDisplay() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-}
-
-function switchMode(mode) {
-    currentMode = mode;
-    timeLeft = modes[mode];
-    clearInterval(timerInterval);
-    isRunning = false;
-    startBtn.textContent = 'Mulai';
-    updateTimerDisplay();
-
-    // Update tampilan tombol mode yang aktif
-    document.querySelectorAll('.modes button').forEach(button => {
-        button.classList.remove('active');
-    });
-    document.getElementById(`${mode}Btn`).classList.add('active');
-}
-
+// === Timer Umum ===
 function startTimer() {
-    if (!isRunning) {
-        isRunning = true;
-        startBtn.textContent = 'Jeda';
-        timerInterval = setInterval(() => {
-            if (timeLeft > 0) {
-                timeLeft--;
-                updateTimerDisplay();
-            } else {
-                clearInterval(timerInterval);
-                isRunning = false;
-                alarmSound.currentTime = 0;
-                alarmSound.play();
+    clearInterval(countdown);
 
-                // Auto ganti mode
-                if (currentMode === 'pomodoro') {
-                    pomodoroCount++;
-                    if (pomodoroCount % 4 === 0) {
-                        switchMode('longBreak'); // setiap 4 sesi → long break
-                    } else {
-                        switchMode('shortBreak');
-                    }
-                } else {
-                    switchMode('pomodoro');
-                }
-            }
-        }, 1000);
-    } else {
-        clearInterval(timerInterval);
-        isRunning = false;
-        startBtn.textContent = 'Mulai';
+    const minutes = parseInt(minutesInput.value) || 0;
+    const seconds = parseInt(secondsInput.value) || 0;
+    totalTime = (minutes * 60) + seconds;
+
+    if (totalTime <= 0) {
+        alert("Masukkan waktu lebih dari 0 detik!");
+        return;
     }
+
+    timeLeft = totalTime;
+    updateDisplay();
+
+    countdown = setInterval(() => {
+        timeLeft--;
+        updateDisplay();
+
+        const progress = ((totalTime - timeLeft) / totalTime) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            alarmSound.play();
+
+            if (isBreak) {
+                alert("☕ Istirahat selesai! Waktunya fokus lagi!");
+                startFocusCycle();
+            } else {
+                alert("✅ Waktu fokus selesai! Sekarang istirahat 5 menit.");
+                startBreakCycle();
+            }
+        }
+    }, 1000);
 }
 
+// === Fungsi update waktu ===
+function updateDisplay() {
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    timerDisplay.textContent =
+        `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+}
+
+// === Fungsi reset ===
 function resetTimer() {
-    switchMode(currentMode);
+    clearInterval(countdown);
+    progressBar.style.width = "0%";
+    timerDisplay.textContent = "00:00";
+    minutesInput.value = "";
+    secondsInput.value = "";
+    isBreak = false;
+    cycle = 0;
 }
 
-// Event Listeners
-startBtn.addEventListener('click', startTimer);
-resetBtn.addEventListener('click', resetTimer);
+// === Fungsi Mission Mode ===
+function startMission() {
+    alert("🚀 Mission dimulai! Kamu akan menjalani 3 sesi fokus (25m) dengan istirahat 5m.");
+    streak++;
+    cycle = 0;
+    startFocusCycle();
+}
 
-pomodoroBtn.addEventListener('click', () => switchMode('pomodoro'));
-shortBreakBtn.addEventListener('click', () => switchMode('shortBreak'));
-longBreakBtn.addEventListener('click', () => switchMode('longBreak'));
+// === Sesi Fokus 25 menit ===
+function startFocusCycle() {
+    cycle++;
+    isBreak = false;
+    if (cycle > 3) {
+        alert("🌟 Mission Complete! Kamu telah menyelesaikan 3 siklus fokus!");
+        streakCount.textContent = streak;
+        return;
+    }
+    minutesInput.value = 25;
+    secondsInput.value = 0;
+    progressBar.style.width = "0%";
+    startTimer();
+}
 
-// Inisialisasi tampilan awal
-updateTimerDisplay();
+// === Sesi Istirahat 5 menit ===
+function startBreakCycle() {
+    isBreak = true;
+    minutesInput.value = 5;
+    secondsInput.value = 0;
+    progressBar.style.width = "0%";
+    startTimer();
+}
+
+// === Notes Section ===
+function addNote() {
+    const text = noteInput.value.trim();
+    if (text === "") return;
+    const li = document.createElement("li");
+    li.textContent = text;
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "❌";
+    delBtn.classList.add("delete-btn");
+    delBtn.onclick = () => li.remove();
+
+    li.appendChild(delBtn);
+    noteList.appendChild(li);
+    noteInput.value = "";
+}
+
+// === Event Listener ===
+document.getElementById('launchBtn').addEventListener('click', startTimer);
+document.getElementById('resetBtn').addEventListener('click', resetTimer);
+missionBtn.addEventListener('click', startMission);
+addNoteBtn.addEventListener('click', addNote);
