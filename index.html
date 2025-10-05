@@ -3,29 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer</title>
+    <title>Galaxy Timer 🌌</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-    <h1>F1 Race Timer 🏁</h1>
-    <div class="modes">
-        <button id="pomodoroBtn" class="active">Race Mode</button>
-        <button id="shortBreakBtn">Pit Stop</button>
-        <button id="longBreakBtn">Full Service</button>
+    <!-- === QUOTE MOTIVASI === -->
+    <p id="quote" class="quote">"Focus on progress, not perfection."</p>
+
+    <h1>Galaxy Timer</h1>
+
+    <!-- === INPUT WAKTU === -->
+    <div class="time-inputs">
+        <input type="number" id="minutesInput" min="0" max="120" placeholder="Minutes">
+        <input type="number" id="secondsInput" min="0" max="59" placeholder="Seconds">
     </div>
-    <div id="timer">25:00</div>
-    <div class="buttons">
-        <button id="startBtn">Start Engine</button>
-        <button id="resetBtn">Reset Race</button>
+
+    <!-- === TAMPILAN TIMER === -->
+    <div id="timer">00:00</div>
+
+    <!-- === PROGRESS BAR === -->
+    <div id="progressBarContainer">
+        <div id="progressBar"></div>
+    </div>
+
+    <!-- === TOMBOL KONTROL === -->
+    <div class="controls">
+        <button id="launchBtn">Launch</button>
+        <button id="resetBtn">Reset</button>
+        <button id="missionBtn">Mission</button>
+    </div>
+
+    <!-- === INFORMASI TAMBAHAN === -->
+    <div class="stats">
+        <p>🔥 Streak: <span id="streakCount">0</span></p>
+    </div>
+
+    <!-- === CATATAN / NOTES === -->
+    <div class="notes-section">
+        <h2>📝 Task Notes</h2>
+        <div class="note-input">
+            <input type="text" id="noteInput" placeholder="Tulis tugasmu di sini...">
+            <button id="addNoteBtn">Tambah</button>
+        </div>
+        <ul id="noteList"></ul>
     </div>
 </div>
 
-
+<!-- === AUDIO ALARM === -->
 <audio id="alarmSound" src="https://www.soundjay.com/buttons/sounds/button-1.mp3" preload="auto"></audio>
 
 <script src="script.js"></script>
-
 </body>
 </html>
