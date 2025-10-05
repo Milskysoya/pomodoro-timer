@@ -1,72 +1,282 @@
+/* === GALAXY BACKGROUND === */
 body {
-    background: linear-gradient(135deg, #000 40%, #c40000 100%);
-    color: #fff;
-    font-family: 'Orbitron', Arial, sans-serif; /* gaya speedometer */
+    margin: 0;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    background: url('galaxy-bg.jpg') center/cover no-repeat fixed;
+    color: #fff;
+    overflow: hidden;
 }
 
+/* === KOTAK BESAR SMOKY TRANSPARAN === */
 .container {
-    background-color: rgba(0,0,0,0.85);
-    padding: 20px 40px;
-    border-radius: 15px;
-    box-shadow: 0 0 25px #c40000;
-    border: 2px solid #fff;
+    position: relative;
+    text-align: center;
+    padding: 40px 60px;
+    border-radius: 30px;
+    z-index: 2;
 }
 
+/* Lapisan smoky besar */
+.container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25); /* smoky lebih transparan */
+    border-radius: 30px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.4),
+        inset 0 0 15px rgba(255, 255, 255, 0.05);
+    z-index: -1;
+}
+
+/* === JUDUL === */
 h1 {
-    font-size: 2.8em;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: #ffdf00; /* warna gold ala podium */
-}
-
-#timer {
-    font-size: 6em;
-    font-weight: bold;
-    margin: 20px 0;
-    color: #fff;
-    text-shadow: 0 0 15px #ff0000;
-}
-
-.buttons button {
-    background-color: #111;
-    color: #ffdf00;
-    border: 2px solid #ff0000;
+    display: inline-block;
+    position: relative;
+    font-size: 2.5em;
+    margin-bottom: 25px;
     padding: 12px 25px;
-    margin: 5px;
-    font-size: 1.2em;
+    border-radius: 15px;
+    text-shadow: 0 0 10px #b76ca5, 0 0 20px #ff00ff;
+}
+
+/* smoky layer untuk judul */
+h1::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+/* === TIMER === */
+#timer {
+    display: inline-block;
+    position: relative;
+    font-size: 6em;
+    padding: 20px 50px;
+    border-radius: 25px;
+    margin: 25px 0;
+    font-weight: bold;
+    text-shadow: 0 0 20px #e91ca8, 0 0 40px #ff00ff;
+}
+
+/* smoky layer yang lebih gelap di timer */
+#timer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55); /* lebih pekat dari container */
+    border-radius: 25px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+/* === PROGRESS BAR === */
+#progressBarContainer {
+    width: 100%;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 25px 0;
+}
+
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00ffff, #ff00ff);
+    box-shadow: 0 0 15px #00ffff;
+    transition: width 0.5s linear;
+}
+
+/* === BUTTONS === */
+button {
+    position: relative;
+    background: none;
+    border: none;
+    color: #eeeced;
+    font-size: 1.1em;
+    margin: 8px;
+    padding: 10px 28px;
+    border-radius: 14px;
+    text-transform: uppercase;
     cursor: pointer;
-    border-radius: 8px;
     transition: all 0.3s ease;
-    text-transform: uppercase;
 }
 
-.buttons button:hover {
-    background-color: #ff0000;
-    color: #fff;
-    box-shadow: 0 0 10px #ff0000;
+/* smoky layer di tombol */
+button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: -1;
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
-.buttons button.active {
-    background-color: #ff0000;
+/* Hover → glowing biru */
+button:hover {
     color: #fff;
+    text-shadow: 0 0 10px #ff00f2, 0 0 25px #ff0099;
+    transform: scale(1.05);
 }
 
-.modes button {
-    background-color: #222;
+/* Klik → glow pink */
+button:active {
+    color: #ff00ff;
+    text-shadow: 0 0 25px #ff00ff, 0 0 50px #da23bb;
+    transform: scale(0.95);
+}
+
+/* Mode aktif */
+button.active {
     color: #fff;
-    border: 1px solid #ff0000;
+    text-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff;
+    animation: darkPulse 3s ease-in-out infinite;
+}
+
+/* animasi glow lembut */
+@keyframes darkPulse {
+    0%, 100% {
+        text-shadow: 0 0 15px #00ffff, 0 0 30px #ff00ff;
+    }
+    50% {
+        text-shadow: 0 0 25px #00ffff, 0 0 50px #ff00ff;
+    }
+}
+
+/* === INPUT WAKTU === */
+.time-inputs {
+    margin-bottom: 20px;
+}
+
+.time-inputs input {
+    width: 120px;
+    padding: 10px;
     margin: 5px;
-    padding: 8px 20px;
-    border-radius: 6px;
-    text-transform: uppercase;
+    border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    text-align: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+    outline: none;
+    transition: all 0.3s ease;
 }
 
-.modes button.active {
-    background-color: #ff0000;
+.time-inputs input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
 }
+
+.time-inputs input:focus {
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+}
+
+
+/* === QUOTE === */
+.quote {
+    font-style: italic;
+    font-size: 1.1em;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+}
+
+/* === STATISTIK STREAK DAN TASK === */
+.stats {
+    margin-top: 25px;
+    font-size: 1.1em;
+    color: #fff;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+}
+
+
+/* === NOTES SECTION === */
+.notes-section {
+    margin-top: 35px;
+    text-align: left;
+}
+
+.notes-section h2 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    color: #fff;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+}
+
+.note-input {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+#noteInput {
+    flex: 1;
+    max-width: 250px;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    backdrop-filter: blur(8px);
+}
+
+#addNoteBtn {
+    margin-left: 8px;
+    padding: 8px 15px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#addNoteBtn:hover {
+    background: rgba(255, 0, 255, 0.3);
+}
+
+#noteList {
+    list-style: none;
+    padding: 0;
+}
+
+#noteList li {
+    background: rgba(255, 255, 255, 0.1);
+    margin: 6px 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #ff5555;
+    font-size: 1em;
+    cursor: pointer;
+}
+
